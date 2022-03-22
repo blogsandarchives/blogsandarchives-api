@@ -5,6 +5,6 @@ import { genRes } from '~/helpers/response.helper';
 export class HealthController {
   @Get()
   checkHealth() {
-    return genRes(true, 200, { api: 'good' });
+    return genRes(true, 200, { api: 'up' });
   }
 }
