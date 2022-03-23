@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, HttpStatus } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { genRes } from '~/helpers/response.helper';
 import { Connection } from 'mongoose';
@@ -9,7 +9,7 @@ export class HealthController {
 
   @Get()
   checkHealth() {
-    return genRes(true, 200, {
+    return genRes(true, HttpStatus.OK, {
       api: 'up',
       db: this.conn.readyState === 1 ? 'up' : 'down',
     });
