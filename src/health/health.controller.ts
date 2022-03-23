@@ -3,7 +3,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { genRes } from '~/helpers/response.helper';
 import { Connection } from 'mongoose';
 
-@Controller('/health')
+@Controller('health')
 export class HealthController {
   constructor(@InjectConnection() private conn: Connection) {}
 
