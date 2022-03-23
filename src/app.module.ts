@@ -22,8 +22,11 @@ import { HealthController } from '~/health/health.controller';
         const pwd =
           configService.get<string>('MONGODB_PASSWORD') || 'blogsandarchives';
 
+        const db =
+          configService.get<string>('MONGODB_DB') || 'blogsandarchivesDB';
+
         return {
-          uri: `mongodb://${user}:${pwd}@${addr}:${port}`,
+          uri: `mongodb://${user}:${pwd}@${addr}:${port}/${db}?authSource=admin`,
         };
       },
     }),
