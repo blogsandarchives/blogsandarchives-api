@@ -40,4 +40,8 @@ export class UsersService {
   async findOne(filter: FilterQuery<UserDocument>): Promise<UserDocument> {
     return this.userModel.findOne(filter).exec();
   }
+
+  async findAll(filter: FilterQuery<UserDocument>): Promise<UserDocument[]> {
+    return this.userModel.find(filter).exec();
+  }
 }

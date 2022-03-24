@@ -19,6 +19,25 @@ export class UsersController {
     });
   }
 
+  @Get('find/:fullname')
+  async find(@Param('fullname') fullname: string) {
+    const userDocs = await this.usersService.findAll({ fullname: fullname });
+
+    const users = [];
+    for (const userDoc of userDocs) {
+      users.push({
+        id: userDoc.id,
+        fullname: userDoc.fullname,
+        username: userDoc.username,
+        registerTimestamp: userDoc.creationDate.valueOf(),
+      });
+    }
+
+    return genRes(true, HttpStatus.OK, {
+      users: users,
+    });
+  }
+
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     const userDoc = await this.usersService.create(createUserDto);
