@@ -9,12 +9,13 @@ export class UsersController {
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
-    const user = await this.usersService.create(createUserDto);
+    const userDoc = await this.usersService.create(createUserDto);
 
     return genRes(true, HttpStatus.CREATED, {
-      fullname: user.fullname,
-      username: user.username,
-      creationTimestamp: user.creationDate.valueOf(),
+      id: userDoc.id,
+      fullname: userDoc.fullname,
+      username: userDoc.username,
+      creationTimestamp: userDoc.creationDate.valueOf(),
     });
   }
 }

@@ -14,7 +14,7 @@ export class UsersService {
     private readonly configService: ConfigService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserDocument> {
     if (
       await this.userModel.exists({ username: createUserDto.username }).exec()
     )
