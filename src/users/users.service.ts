@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, FilterQuery } from 'mongoose';
 import * as argon2 from 'argon2';
-import { CreateUserDto } from './dto/create-user.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
 import { CreateUserError } from './errors/create-user.error';
 import { User, UserDocument } from './schemas/user.schema';
 import { ConfigService } from '@nestjs/config';
@@ -14,13 +14,13 @@ export class UsersService {
     private readonly configService: ConfigService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserDocument> {
+  async create(registerUserDto: RegisterUserDto): Promise<UserDocument> {
     if (
-      await this.userModel.exists({ username: createUserDto.username }).exec()
+      await this.userModel.exists({ username: registerUserDto.username }).exec()
     )
       throw new CreateUserError('Username is already taken.');
 
-    const passwordHash = await argon2.hash(createUserDto.password, {
+    const passwordHash = await argon2.hash(registerUserDto.password, {
       type: argon2.argon2id,
       timeCost: parseInt(this.configService.get('ARGON2_ITER')) || 3,
       parallelism: parseInt(this.configService.get('ARGON2_P')) || 4,
@@ -30,8 +30,8 @@ export class UsersService {
     });
 
     return new this.userModel({
-      fullname: createUserDto.fullname,
-      username: createUserDto.username,
+      fullname: registerUserDto.fullname,
+      username: registerUserDto.username,
       passwordHash: passwordHash,
       creationDate: new Date(Date.now()),
     }).save();

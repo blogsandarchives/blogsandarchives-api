@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
 import { genRes } from '~/helpers/response.helper';
-import { CreateUserDto } from './dto/create-user.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -39,7 +39,7 @@ export class UsersController {
   }
 
   @Post('register')
-  async register(@Body() createUserDto: CreateUserDto) {
+  async register(@Body() createUserDto: RegisterUserDto) {
     const userDoc = await this.usersService.create(createUserDto);
 
     return genRes(true, HttpStatus.CREATED, {
