@@ -17,8 +17,7 @@ export class ErrorFilter implements ExceptionFilter {
 
     res.status(status).json(
       genRes(false, status, {
-        err: error.name,
-        msg: error.message,
+        msg: 'An unexpected error occurred.',
       }),
     );
   }
