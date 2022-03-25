@@ -50,13 +50,19 @@ export class UsersController {
 
   @Post('register')
   async register(@Body() createUserDto: RegisterUserDto) {
-    const userDoc = await this.usersService.create(createUserDto);
+    try {
+      const userDoc = await this.usersService.create(createUserDto);
 
-    return genRes(true, HttpStatus.CREATED, {
-      id: userDoc.id,
-      fullname: userDoc.fullname,
-      username: userDoc.username,
-      creationTimestamp: userDoc.creationDate.valueOf(),
-    });
+      return genRes(true, HttpStatus.CREATED, {
+        id: userDoc.id,
+        fullname: userDoc.fullname,
+        username: userDoc.username,
+        creationTimestamp: userDoc.creationDate.valueOf(),
+      });
+    } catch (error) {
+      return genRes(false, HttpStatus.BAD_REQUEST, {
+        msg: error.message,
+      });
+    }
   }
 }
