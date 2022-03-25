@@ -11,6 +11,11 @@ export class UsersController {
   async getInfo(@Param('username') username: string) {
     const userDoc = await this.usersService.findOne({ username: username });
 
+    if (!userDoc)
+      return genRes(false, HttpStatus.NO_CONTENT, {
+        msg: 'User not found.',
+      });
+
     return genRes(true, HttpStatus.OK, {
       id: userDoc.id,
       fullname: userDoc.fullname,
@@ -22,6 +27,11 @@ export class UsersController {
   @Get('find/:fullname')
   async find(@Param('fullname') fullname: string) {
     const userDocs = await this.usersService.findAll({ fullname: fullname });
+
+    if (userDocs.length === 0)
+      return genRes(false, HttpStatus.NO_CONTENT, {
+        msg: 'No users are found.',
+      });
 
     const users = [];
     for (const userDoc of userDocs) {
