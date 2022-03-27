@@ -1,12 +1,18 @@
 import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import * as argon2 from 'argon2';
 import { genRes } from '~/helpers/response.helper';
 import { dateToSeconds } from '~/helpers/time.helper';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
 import { UsersService } from './users.service';
+import { SessionsService } from '~/sessions/sessions.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly sessionsService: SessionsService,
+  ) {}
 
   @Get('info/:username')
   async getInfo(@Param('username') username: string) {
@@ -65,5 +71,26 @@ export class UsersController {
         msg: error.message,
       });
     }
+  }
+
+  @Post('login')
+  async login(@Body() loginUserDto: LoginUserDto) {
+    const userDoc = await this.usersService.findOne({
+      username: loginUserDto.username,
+    });
+
+    if (
+      !userDoc ||
+      !(await argon2.verify(userDoc.passwordHash, loginUserDto.password))
+    )
+      return genRes(false, HttpStatus.UNAUTHORIZED, {
+        msg: 'Incorrect login credentials.',
+      });
+
+    const sessionDoc = await this.sessionsService.create(userDoc);
+
+    return genRes(true, HttpStatus.OK, {
+      sessionId: sessionDoc.id,
+    });
   }
 }
