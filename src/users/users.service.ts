@@ -6,6 +6,7 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import { CreateUserError } from './errors/create-user.error';
 import { User, UserDocument } from './schemas/user.schema';
 import { ConfigService } from '@nestjs/config';
+import { nowSeconds, secondsToDate } from '~/helpers/time.helper';
 
 @Injectable()
 export class UsersService {
@@ -33,7 +34,7 @@ export class UsersService {
       fullname: registerUserDto.fullname,
       username: registerUserDto.username,
       passwordHash: passwordHash,
-      creationDate: new Date(Date.now()),
+      creationDate: secondsToDate(nowSeconds()),
     }).save();
   }
 

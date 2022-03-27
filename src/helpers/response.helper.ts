@@ -1,3 +1,5 @@
+import { nowSeconds } from './time.helper';
+
 export function genRes(
   success: boolean,
   status: number,
@@ -6,7 +8,7 @@ export function genRes(
   return {
     success: success,
     status: status,
-    timestamp: Date.now(), // UTC,
+    timestamp: nowSeconds(), // UTC,
     data: data,
   };
 }

@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
 import { genRes } from '~/helpers/response.helper';
+import { dateToSeconds } from '~/helpers/time.helper';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UsersService } from './users.service';
 
@@ -20,7 +21,7 @@ export class UsersController {
       id: userDoc.id,
       fullname: userDoc.fullname,
       username: userDoc.username,
-      registerTimestamp: userDoc.creationDate.valueOf(),
+      registerTimestamp: dateToSeconds(userDoc.creationDate),
     });
   }
 
@@ -39,7 +40,7 @@ export class UsersController {
         id: userDoc.id,
         fullname: userDoc.fullname,
         username: userDoc.username,
-        registerTimestamp: userDoc.creationDate.valueOf(),
+        registerTimestamp: dateToSeconds(userDoc.creationDate),
       });
     }
 
@@ -57,7 +58,7 @@ export class UsersController {
         id: userDoc.id,
         fullname: userDoc.fullname,
         username: userDoc.username,
-        creationTimestamp: userDoc.creationDate.valueOf(),
+        creationTimestamp: dateToSeconds(userDoc.creationDate),
       });
     } catch (error) {
       return genRes(false, HttpStatus.BAD_REQUEST, {
