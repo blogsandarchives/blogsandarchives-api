@@ -18,7 +18,7 @@ export class DefaultConfigService {
   }
 
   get mongoDbPort(): number {
-    return this.configService.get('MONGODB_PORT') || 27017;
+    return parseInt(this.configService.get('MONGODB_PORT')) || 27017;
   }
 
   get mongoDbUser(): string {
