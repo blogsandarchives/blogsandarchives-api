@@ -6,7 +6,6 @@ import * as crypto from 'crypto';
 import { LoginUserDto } from '~/users/dto/login-user.dto';
 import { Session, SessionDocument } from './schemas/session.schema';
 import { UsersService } from '~/users/users.service';
-import { NewSessionError } from './errors/new-session.error';
 import { nowSeconds, secondsToDate } from '~/time.helper';
 import { DefaultConfigService } from '~/default-config.service';
 import { TerminateSessionDto } from './dto/terminate-session.dto';
@@ -30,7 +29,7 @@ export class SessionsService {
       !userDoc ||
       !(await argon2.verify(userDoc.passwordHash, loginUserDto.password))
     )
-      throw new NewSessionError('Incorrect credentials.');
+      throw new AuthFailedError('Incorrect credentials.');
 
     const exp = this.defaultConfigService.sessionExpDuration;
 

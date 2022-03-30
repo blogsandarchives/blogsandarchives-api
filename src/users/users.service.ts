@@ -4,9 +4,9 @@ import { Model } from 'mongoose';
 import * as argon2 from 'argon2';
 import { nowDate } from '~/time.helper';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { CreateUserError } from './errors/create-user.error';
 import { User, UserDocument } from './schemas/user.schema';
 import { DefaultConfigService } from '~/default-config.service';
+import { UsernameUnavailableError } from './errors/username-unavailable.error';
 
 @Injectable()
 export class UsersService {
@@ -19,7 +19,7 @@ export class UsersService {
     if (
       await this.userModel.exists({ username: registerUserDto.username }).exec()
     )
-      throw new CreateUserError('Username is already taken.');
+      throw new UsernameUnavailableError('Username is already taken.');
 
     const hash = await argon2.hash(registerUserDto.password, {
       hashLength: this.defaultConfigService.argon2TagLen,

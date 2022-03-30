@@ -1,11 +1,11 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { genRes } from '~/response.helper';
-import { NewSessionError } from '~/sessions/errors/new-session.error';
 import { SessionsService } from '~/sessions/sessions.service';
 import { dateToSeconds } from '~/time.helper';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { CreateUserError } from './errors/create-user.error';
+import { AuthFailedError } from './errors/auth-failed.error';
+import { UsernameUnavailableError } from './errors/username-unavailable.error';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -26,7 +26,7 @@ export class UsersController {
         creationTimestamp: dateToSeconds(userDoc.creationDate),
       });
     } catch (err) {
-      if (!(err instanceof CreateUserError)) throw err;
+      if (!(err instanceof UsernameUnavailableError)) throw err;
 
       return genRes(false, HttpStatus.BAD_REQUEST, {
         msg: err.message,
@@ -43,7 +43,7 @@ export class UsersController {
         sessionId: sessionDoc.sessionId,
       });
     } catch (err) {
-      if (!(err instanceof NewSessionError)) throw err;
+      if (!(err instanceof AuthFailedError)) throw err;
 
       return genRes(false, HttpStatus.UNAUTHORIZED, {
         msg: err.message,
