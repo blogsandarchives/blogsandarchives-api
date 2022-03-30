@@ -2,6 +2,7 @@ import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { genRes } from '~/response.helper';
 import { AuthFailedError } from '~/users/errors/auth-failed.error';
 import { TerminateSessionDto } from './dto/terminate-session.dto';
+import { InvalidSessionError } from './errors/invalid-session.error';
 import { SessionNotFoundError } from './errors/session-not-found.error';
 import { SessionsService } from './sessions.service';
 
@@ -20,6 +21,7 @@ export class SessionsController {
     } catch (err) {
       let status: number;
       switch (err.constructor) {
+        case InvalidSessionError:
         case SessionNotFoundError:
           status = HttpStatus.BAD_REQUEST;
           break;

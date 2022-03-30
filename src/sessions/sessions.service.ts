@@ -11,6 +11,7 @@ import { DefaultConfigService } from '~/default-config.service';
 import { TerminateSessionDto } from './dto/terminate-session.dto';
 import { SessionNotFoundError } from './errors/session-not-found.error';
 import { AuthFailedError } from '~/users/errors/auth-failed.error';
+import { InvalidSessionError } from './errors/invalid-session.error';
 
 @Injectable()
 export class SessionsService {
@@ -54,6 +55,8 @@ export class SessionsService {
     if (!sessionDoc) throw new SessionNotFoundError('Session does not exists.');
 
     await sessionDoc.populate('user');
+
+    if (!sessionDoc.user) throw new InvalidSessionError('Invalid session.');
 
     if (
       !(await argon2.verify(
