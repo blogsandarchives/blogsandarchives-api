@@ -69,4 +69,8 @@ export class DefaultConfigService {
   get argon2TagLen(): number {
     return parseInt(this.configService.get('ARGON2_TAG_LEN')) || 32;
   }
+
+  get sessionExpDuration(): number {
+    return parseInt(this.configService.get('SESSION_EXP_DURATION')) || 604800;
+  }
 }

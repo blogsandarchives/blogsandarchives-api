@@ -37,4 +37,8 @@ export class UsersService {
       creationDate: nowDate(),
     }).save();
   }
+
+  async findOneByUsername(username: string): Promise<UserDocument> {
+    return this.userModel.findOne({ username: username }).exec();
+  }
 }
