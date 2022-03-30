@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DefaultConfigService } from './default-config.service';
 import { HealthController } from './health/health.controller';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { HealthController } from './health/health.controller';
         };
       },
     }),
+    UsersModule,
   ],
   controllers: [HealthController],
   providers: [DefaultConfigService],
