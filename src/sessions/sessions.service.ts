@@ -9,6 +9,9 @@ import { UsersService } from '~/users/users.service';
 import { NewSessionError } from './errors/new-session.error';
 import { nowSeconds, secondsToDate } from '~/time.helper';
 import { DefaultConfigService } from '~/default-config.service';
+import { TerminateSessionDto } from './dto/terminate-session.dto';
+import { SessionNotFoundError } from './errors/session-not-found.error';
+import { AuthFailedError } from '~/users/errors/auth-failed.error';
 
 @Injectable()
 export class SessionsService {
@@ -36,5 +39,31 @@ export class SessionsService {
       user: userDoc,
       expirationDate: secondsToDate(nowSeconds() + exp),
     }).save();
+  }
+
+  async findOneBySessionId(sessionId: string) {
+    return this.sessionModel.findOne({ sessionId: sessionId }).exec();
+  }
+
+  async remove(
+    terminateSessionDto: TerminateSessionDto,
+  ): Promise<SessionDocument> {
+    const sessionDoc = await this.findOneBySessionId(
+      terminateSessionDto.sessionId,
+    );
+
+    if (!sessionDoc) throw new SessionNotFoundError('Session does not exists.');
+
+    await sessionDoc.populate('user');
+
+    if (
+      !(await argon2.verify(
+        sessionDoc.user.passwordHash,
+        terminateSessionDto.password,
+      ))
+    )
+      throw new AuthFailedError('Incorrect credentials.');
+
+    return sessionDoc.remove();
   }
 }
