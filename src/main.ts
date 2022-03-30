@@ -1,6 +1,6 @@
-import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { DefaultConfigService } from './default-config.service';
 import { NotFoundExceptionFilter } from './not-found-exception.filter';
 
 async function bootstrap() {
@@ -8,10 +8,10 @@ async function bootstrap() {
 
   app.useGlobalFilters(new NotFoundExceptionFilter());
 
-  const configService = app.get(ConfigService);
+  const defaultConfigService = app.get(DefaultConfigService);
 
-  const addr = configService.get<string>('BIND_ADDR') || '0.0.0.0';
-  const port = parseInt(configService.get('BIND_PORT')) || 80;
+  const addr = defaultConfigService.bindAddr;
+  const port = defaultConfigService.bindPort;
   await app.listen(port, addr);
 }
 bootstrap();
