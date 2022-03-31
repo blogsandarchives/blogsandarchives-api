@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
 import { genRes } from '~/response.helper';
 import { SessionsService } from '~/sessions/sessions.service';
 import { dateToSeconds } from '~/time.helper';
@@ -49,5 +49,25 @@ export class UsersController {
         msg: err.message,
       });
     }
+  }
+
+  @Get('info')
+  async info(@Query('username') username: string) {
+    if (!username)
+      return genRes(false, HttpStatus.BAD_REQUEST, {
+        msg: `Missing query string ("username").`,
+      });
+
+    const userDoc = await this.usersService.findOneByUsername(username);
+
+    if (!userDoc)
+      return genRes(false, HttpStatus.NO_CONTENT, {
+        msg: 'User does not exists.',
+      });
+
+    return genRes(true, HttpStatus.OK, {
+      fullname: userDoc.fullname,
+      registerTimestamp: dateToSeconds(userDoc.creationDate),
+    });
   }
 }
