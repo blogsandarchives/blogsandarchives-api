@@ -21,7 +21,10 @@ export class SessionsService {
     private defaultConfigService: DefaultConfigService,
   ) {}
 
-  async create(loginUserDto: LoginUserDto): Promise<SessionDocument> {
+  async create(
+    loginUserDto: LoginUserDto,
+    ip: string,
+  ): Promise<SessionDocument> {
     const userDoc = await this.usersService.findOneByUsername(
       loginUserDto.username,
     );
@@ -37,6 +40,7 @@ export class SessionsService {
     return new this.sessionModel({
       sessionId: crypto.randomBytes(32).toString('base64url'),
       user: userDoc,
+      ip: ip,
       expirationDate: secondsToDate(nowSeconds() + exp),
     }).save();
   }

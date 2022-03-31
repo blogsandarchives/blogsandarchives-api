@@ -12,6 +12,9 @@ export class Session {
   user: User;
 
   @Prop()
+  ip: string;
+
+  @Prop()
   expirationDate: Date;
 }
 

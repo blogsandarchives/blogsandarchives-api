@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
+import { RealIP } from 'nestjs-real-ip';
 import { genRes } from '~/response.helper';
 import { SessionsService } from '~/sessions/sessions.service';
 import { dateToSeconds } from '~/time.helper';
@@ -35,9 +36,9 @@ export class UsersController {
   }
 
   @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto) {
+  async login(@RealIP() ip: string, @Body() loginUserDto: LoginUserDto) {
     try {
-      const sessionDoc = await this.sessionsService.create(loginUserDto);
+      const sessionDoc = await this.sessionsService.create(loginUserDto, ip);
 
       return genRes(true, HttpStatus.OK, {
         sessionId: sessionDoc.sessionId,
